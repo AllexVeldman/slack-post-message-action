@@ -1,0 +1,47 @@
+name: 'Slack Post Message'
+description: 'Post a Message to a Sack channel'
+inputs:
+  slack-bot-token:
+    description: 'Token of the Slack bot to post with'
+    required: true
+  channel-id:
+    description: 'ID of the channel to post in'
+    required: true
+  thread-ts:
+    description: 'ts of the message to reply to'
+    required: false
+    default: ""
+  broadcast:
+    description: 'broadcast the reply'
+    required: false
+    default: "false"
+  text:
+    description: 'Text of the message, shows up in the notification'
+    required: false
+    default: ""
+  blocks:
+    description: 'JSON string containing the blocks to add to the message'
+    required: false
+    default: "[]"
+  update:
+    description: 'Update an existing message instead of posting a new one. if true, thread-ts is mandatory'
+    required: false
+    default: "false"
+outputs:
+  ts:
+    description: 'Timestamp of the message, can be used to post replies or updates'
+    value: ${{ steps.post-message.outputs.ts }}
+runs:
+  using: "composite"
+  steps:
+    - run: >-
+        ${{ github.action_path }}/post_message.sh
+        "${{ inputs.slack-bot-token }}"
+        "${{ inputs.channel-id }}"
+        "${{ inputs.thread-ts }}"
+        "${{ inputs.broadcast }}"
+        "${{ inputs.text }}"
+        '${{ inputs.blocks }}'
+        "${{ inputs.update }}"
+      shell: bash
+      id: post-message

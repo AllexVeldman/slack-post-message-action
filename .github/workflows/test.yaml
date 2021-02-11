@@ -1,0 +1,62 @@
+name: Test slack actions
+
+on:
+  push:
+
+jobs:
+  test-post-message:
+    runs-on: ubuntu-latest
+    name: Test slack-post-message Action
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: AllexVeldman/slack-post-message-action@main
+        id: slack
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ secrets.CHANNEL_ID }}
+          text: "⏳ First message"
+          blocks: >-
+            [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "First message here"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "🚀 Details",
+                        "emoji": true
+                      },
+                      "url": "https://github.com/AllexVeldman/slack-post-message-action/actions/runs/${{github.run_id}}"
+                    }
+                  ]
+                }
+              ]
+      - uses: AllexVeldman/slack-post-message-action@main
+        id: reply
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ secrets.CHANNEL_ID }}
+          text: "This is a reply"
+          thread-ts: ${{ steps.slack.outputs.ts }}
+      - uses: AllexVeldman/slack-post-message-action@main
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ secrets.CHANNEL_ID }}
+          text: "This is a broadcast reply"
+          thread-ts: ${{ steps.slack.outputs.ts }}
+          broadcast: true
+      - uses: AllexVeldman/slack-post-message-action@main
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ secrets.CHANNEL_ID }}
+          text: "This message is updated"
+          thread-ts: ${{ steps.reply.outputs.ts }}
+          update: true
