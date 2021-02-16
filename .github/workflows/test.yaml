@@ -13,7 +13,7 @@ jobs:
         id: slack
         with:
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ secrets.CHANNEL_ID }}
+          channel-id: "#test"
           text: "⏳ First message"
           blocks: >-
             [
@@ -43,20 +43,20 @@ jobs:
         id: reply
         with:
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ secrets.CHANNEL_ID }}
+          channel-id: ${{ steps.slack.outputs.channel }}
           text: "This is a reply"
           thread-ts: ${{ steps.slack.outputs.ts }}
       - uses: AllexVeldman/slack-post-message-action@main
         with:
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ secrets.CHANNEL_ID }}
+          channel-id: ${{ steps.slack.outputs.channel }}
           text: "This is a broadcast reply"
           thread-ts: ${{ steps.slack.outputs.ts }}
           broadcast: true
       - uses: AllexVeldman/slack-post-message-action@main
         with:
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ secrets.CHANNEL_ID }}
+          channel-id: ${{ steps.slack.outputs.channel }}
           text: "This message is updated"
           thread-ts: ${{ steps.reply.outputs.ts }}
           update: true

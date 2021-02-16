@@ -48,4 +48,8 @@ postMessage
 echo $result | jq '.'
 
 ts=$(echo $result | jq -r '.ts')
+channel_id=$(echo $result | jq -r '.channel')
 echo ::set-output name=ts::$ts
+echo ::set-output name=channel::$channel_id
+
+test "$(echo $result | jq -r '.ok')" == "true"

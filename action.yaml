@@ -31,6 +31,9 @@ outputs:
   ts:
     description: 'Timestamp of the message, can be used to post replies or updates'
     value: ${{ steps.post-message.outputs.ts }}
+  channel:
+    description: 'the channel ID where the message was posted'
+    value: ${{ steps.post-message.outputs.channel }}
 runs:
   using: "composite"
   steps:
